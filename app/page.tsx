@@ -22,7 +22,7 @@ export default function HomePage() {
   return (
     <>
       {/* ===== HERO ===== */}
-      <section className="relative min-h-screen flex items-center justify-center text-center px-[5%] pt-[120px] pb-20 overflow-hidden">
+      <section className="relative min-h-screen flex items-center px-[5%] pt-[120px] pb-20 overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <div className="hero-grid absolute inset-0" />
           <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full blur-[80px] animate-float" style={{ background: "radial-gradient(circle, rgba(108,99,255,0.35) 0%, transparent 70%)" }} />
@@ -30,34 +30,52 @@ export default function HomePage() {
           <div className="absolute bottom-[20%] left-[5%] w-[300px] h-[300px] rounded-full blur-[80px] animate-float3" style={{ background: "radial-gradient(circle, rgba(255,107,157,0.18) 0%, transparent 70%)" }} />
         </div>
 
-        <div className="max-w-[820px] relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-accent-purple/[0.12] border border-accent-purple/30 rounded-full text-xs font-semibold text-accent-cyan mb-7">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse2" />
-            Intelligent Automation for Modern Business
+        <div className="max-w-[1200px] mx-auto w-full relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left: Hero text */}
+            <div>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-accent-purple/[0.12] border border-accent-purple/30 rounded-full text-xs font-semibold text-accent-cyan mb-7">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse2" />
+                Intelligent Automation for Modern Business
+              </div>
+
+              <h1 className="text-[clamp(2.5rem,5vw,4.5rem)] font-black tracking-tight leading-[1.1] mb-6">
+                Build Smarter.<br />
+                <span className="gradient-text">Scale Faster.</span><br />
+                With AI.
+              </h1>
+
+              <p className="text-lg text-slate-400 max-w-[480px] mb-10">
+                StakUp designs and deploys custom AI agents, automation pipelines, and intelligent
+                integrations that save time, cut costs, and unlock new growth.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                <Link href="/contact?book=true" className="btn-gradient text-white font-semibold px-7 py-3 rounded-full inline-flex items-center gap-2 text-sm w-full sm:w-auto justify-center">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
+                  Book a Free Strategy Call
+                </Link>
+                <Link href="/services" className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full text-sm font-semibold border border-accent-purple/50 text-white hover:bg-accent-purple/10 hover:border-accent-purple transition-all duration-200 w-full sm:w-auto">
+                  Explore Services
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: Chatbot */}
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="section-label">AI Assistant</span>
+              </div>
+              <ChatBot />
+              <Link href="/contact" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors duration-200 self-start">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Prefer talking to a human?
+              </Link>
+            </div>
           </div>
 
-          <h1 className="text-[clamp(2.5rem,7vw,5rem)] font-black tracking-tight leading-[1.1] mb-6">
-            Build Smarter.<br />
-            <span className="gradient-text">Scale Faster.</span><br />
-            With AI.
-          </h1>
-
-          <p className="text-lg text-slate-400 max-w-[560px] mx-auto mb-10">
-            StakUp designs and deploys custom AI agents, automation pipelines, and intelligent
-            integrations that save time, cut costs, and unlock new growth.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/contact?book=true" className="btn-gradient text-white font-semibold px-7 py-3 rounded-full inline-flex items-center gap-2 text-sm w-full sm:w-auto justify-center">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
-              Book a Free Strategy Call
-            </Link>
-            <Link href="/services" className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full text-sm font-semibold border border-accent-purple/50 text-white hover:bg-accent-purple/10 hover:border-accent-purple transition-all duration-200 w-full sm:w-auto">
-              Explore Services
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </Link>
-          </div>
-
+          {/* Stats row */}
           <div className="flex flex-wrap justify-center gap-8 md:gap-12 mt-16 pt-12 border-t border-accent-purple/20">
             {[
               { target: 50, suffix: "+", label: "Projects Delivered" },
@@ -73,39 +91,6 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ===== CHATBOT ===== */}
-      <section className="relative py-20 px-[5%] overflow-hidden" style={{ background: "#0c1120" }}>
-        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: "linear-gradient(90deg, transparent, #6c63ff, transparent)" }} />
-        <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: "linear-gradient(90deg, transparent, #6c63ff, transparent)" }} />
-
-        <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <span className="section-label mb-4 block">AI Assistant</span>
-            <h2 className="text-[clamp(1.8rem,3.5vw,2.8rem)] font-bold mb-5 leading-tight">
-              Meet <span className="gradient-text">Stak</span>, Your AI Business Partner
-            </h2>
-            <p className="text-slate-400 mb-8 text-[0.95rem]">
-              Get instant answers about our services, pricing, and how AI can transform
-              your operations — available 24/7, no waiting.
-            </p>
-            <ul className="flex flex-col gap-3 mb-8">
-              {["Instant responses to your AI questions", "Personalized service recommendations", "Qualified leads connect directly with our team", "Available around the clock, every day"].map((item) => (
-                <li key={item} className="flex items-center gap-3 text-sm text-slate-400">
-                  <span className="w-[18px] h-[18px] min-w-[18px] rounded-full bg-accent-purple/20 border border-accent-purple inline-flex items-center justify-center">
-                    <svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#6c63ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <Link href="/contact" className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold border border-accent-purple/50 text-white hover:bg-accent-purple/10 transition-all duration-200">
-              Talk to a Human Instead
-            </Link>
-          </div>
-          <ChatBot />
         </div>
       </section>
 

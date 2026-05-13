@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import type { ProjectState, ChatMessage } from "@/lib/types";
 
 interface Message {
   id: number;
@@ -8,50 +9,115 @@ interface Message {
   isUser: boolean;
 }
 
-const BOT_REPLIES = [
-  "Great question! StakUp specializes in building custom AI solutions tailored to your business needs.",
-  "We'd love to help you automate your workflows. Our team can build intelligent agents that work 24/7.",
-  "Our services include AI agents, automation pipelines, LLM integrations, and custom chatbots.",
-  "Ready to get started? Click 'Book Now' to schedule a free strategy call with our team.",
-  "We've helped dozens of businesses save thousands of hours through intelligent automation.",
-  "From MVP to production, we deliver AI solutions that scale with your business.",
-];
-
 let msgId = 3;
 
 export default function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, text: "Hey there! I'm Stak, StakUp's AI assistant. How can I help you today?", isUser: false },
-    { id: 2, text: "I can answer questions about our services, pricing, or help you figure out the best AI solution for your business.", isUser: false },
+    { id: 1, text: "Hey there! I'm Stak, StakUp's AI assistant. I'll walk you through a quick evaluation to scope your project and get you a quote.", isUser: false },
+    { id: 2, text: "Let's start with the basics — what are you looking to build?", isUser: false },
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [replyIndex, setReplyIndex] = useState(0);
+  const [projectState, setProjectState] = useState<ProjectState>({
+    currentPass: 1,
+    originalQuote: null,
+    scopeLog: [],
+    changeOrders: [],
+  });
+  const [conversationHistory, setConversationHistory] = useState<ChatMessage[]>([]);
+  const streamingStarted = useRef(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const isInitialMount = useRef(true);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (isInitialMount.current) {
+      // On initial mount, scroll inside the chat container without affecting the page
+      isInitialMount.current = false;
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      }
+      return;
+    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [messages, isTyping]);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     const text = input.trim();
-    if (!text) return;
+    if (!text || isTyping) return;
 
     const userMsg: Message = { id: msgId++, text, isUser: true };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setIsTyping(true);
+    streamingStarted.current = false;
 
-    setTimeout(() => {
+    const newHistory: ChatMessage[] = [
+      ...conversationHistory,
+      { role: "user", content: text },
+    ];
+
+    const botMsgId = msgId++;
+    setMessages((prev) => [...prev, { id: botMsgId, text: "", isUser: false }]);
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: newHistory, projectState }),
+      });
+
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
+      let accumulatedText = "";
+      let updatedState = projectState;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const raw = decoder.decode(value, { stream: true });
+        const lines = raw.split("\n\n").filter((l) => l.startsWith("data: "));
+
+        for (const line of lines) {
+          let payload: { text?: string; done?: boolean; updatedProjectState?: ProjectState; error?: string };
+          try {
+            payload = JSON.parse(line.slice(6));
+          } catch {
+            continue;
+          }
+
+          if (payload.done) {
+            if (payload.updatedProjectState) updatedState = payload.updatedProjectState;
+          } else if (payload.text) {
+            if (!streamingStarted.current) {
+              streamingStarted.current = true;
+              setIsTyping(false);
+            }
+            accumulatedText += payload.text;
+            setMessages((prev) =>
+              prev.map((m) => (m.id === botMsgId ? { ...m, text: accumulatedText } : m))
+            );
+          }
+        }
+      }
+
+      setProjectState(updatedState);
+      setConversationHistory([
+        ...newHistory,
+        { role: "assistant", content: accumulatedText },
+      ]);
+    } catch {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === botMsgId
+            ? { ...m, text: "Sorry, something went wrong. Please try again." }
+            : m
+        )
+      );
+    } finally {
       setIsTyping(false);
-      const botMsg: Message = {
-        id: msgId++,
-        text: BOT_REPLIES[replyIndex % BOT_REPLIES.length],
-        isUser: false,
-      };
-      setMessages((prev) => [...prev, botMsg]);
-      setReplyIndex((i) => i + 1);
-    }, 1200 + Math.random() * 800);
+    }
   };
 
   const handleKey = (e: React.KeyboardEvent) => {
@@ -73,7 +139,7 @@ export default function ChatBot() {
       </div>
 
       {/* Messages */}
-      <div className="flex flex-col gap-4 p-5 min-h-[280px] max-h-[320px] overflow-y-auto">
+      <div ref={chatContainerRef} className="flex flex-col gap-4 p-5 min-h-[280px] max-h-[320px] overflow-y-auto">
         {messages.map((msg) => (
           <div key={msg.id} className={`flex gap-2.5 items-start ${msg.isUser ? "flex-row-reverse" : ""}`}>
             <div className="w-7 h-7 min-w-[28px] rounded-full bg-gradient-accent flex items-center justify-center text-xs font-bold text-white">
