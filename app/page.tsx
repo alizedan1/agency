@@ -1,161 +1,395 @@
+"use client";
+
 import Link from "next/link";
 import ChatBot from "@/components/ChatBot";
 import AnimatedCounter from "@/components/AnimatedCounter";
+import { servicesData } from "@/lib/services-data";
+import { ArrowRight } from "lucide-react";
+import { useEffect, useRef } from "react";
 
-const services = [
-  { icon: "🤖", title: "Custom AI Agents", desc: "Autonomous agents that reason, plan, and execute complex multi-step tasks on your behalf — 24/7 without human intervention." },
-  { icon: "⚡", title: "Workflow Automation", desc: "Eliminate repetitive tasks with intelligent automation that integrates with your existing tools and processes seamlessly." },
-  { icon: "💬", title: "LLM Integrations", desc: "Embed the power of cutting-edge language models directly into your products, apps, and internal tools." },
-  { icon: "📊", title: "AI-Powered Analytics", desc: "Transform raw data into actionable insights with AI dashboards and predictive models built for your industry." },
-  { icon: "🔗", title: "API & Backend AI", desc: "Production-ready AI backends, RESTful APIs, and scalable infrastructure designed for performance and reliability." },
-  { icon: "🛡️", title: "AI Strategy Consulting", desc: "Our experts map out your AI roadmap and identify the highest-ROI opportunities fast." },
-];
+// ── Scroll-reveal hook ────────────────────────────────────────
+function useReveal() {
+  const ref = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (typeof window === "undefined" || !ref.current) return;
+    const mq = window.matchMedia("(prefers-reduced-motion: no-preference)");
+    if (!mq.matches) return;
+    const el = ref.current;
+    const els = el.querySelectorAll("[data-reveal]");
+    if (!els.length) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in"); }),
+      { threshold: 0.18 }
+    );
+    els.forEach((e) => io.observe(e));
+    return () => io.disconnect();
+  }, []);
+  return ref as React.RefObject<HTMLElement>;
+}
 
 const steps = [
-  { num: "01", title: "Discovery Call", desc: "We learn about your business, challenges, and goals. Together we identify where AI can have the biggest impact." },
-  { num: "02", title: "Strategy & Architecture", desc: "Our team designs a custom AI solution architecture tailored to your needs, tech stack, and budget." },
-  { num: "03", title: "Build & Iterate", desc: "We develop in fast cycles with regular demos and feedback loops, keeping you in the loop at every step." },
-  { num: "04", title: "Deploy & Scale", desc: "We deploy to production, monitor performance, and optimize over time. Your AI solution grows as your business grows." },
+  { num: "01", title: "Discovery call",    desc: "We learn your workflows, pain points and tech stack — finding where AI saves the most time." },
+  { num: "02", title: "Solution design",   desc: "Our team designs a solution tailored to your practice — invoice automation, client bots, or tax research assistants." },
+  { num: "03", title: "Build & test",      desc: "We develop in fast cycles with regular demos. You give feedback, we iterate — tested on real accounting scenarios." },
+  { num: "04", title: "Deploy & support",  desc: "We deploy to your environment, train your team, and provide ongoing support. Your AI improves as your practice grows." },
 ];
 
 export default function HomePage() {
+  const heroRef    = useReveal();
+  const statsRef   = useReveal();
+  const prodsRef   = useReveal();
+  const howRef     = useReveal();
+  const ctaRef     = useReveal();
+
   return (
     <>
-      {/* ===== HERO ===== */}
-      <section className="relative min-h-screen flex items-center px-[5%] pt-[120px] pb-20 overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <div className="hero-grid absolute inset-0" />
-          <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full blur-[80px] animate-float" style={{ background: "radial-gradient(circle, rgba(108,99,255,0.35) 0%, transparent 70%)" }} />
-          <div className="absolute bottom-0 right-[10%] w-[400px] h-[400px] rounded-full blur-[80px] animate-float2" style={{ background: "radial-gradient(circle, rgba(0,212,255,0.22) 0%, transparent 70%)" }} />
-          <div className="absolute bottom-[20%] left-[5%] w-[300px] h-[300px] rounded-full blur-[80px] animate-float3" style={{ background: "radial-gradient(circle, rgba(255,107,157,0.18) 0%, transparent 70%)" }} />
-        </div>
+      {/* ═══════════════════════════════════════════ HERO PANEL ══ */}
+      <section
+        ref={heroRef as React.RefObject<HTMLElement>}
+        className="snap-panel relative min-h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden"
+        style={{
+          paddingTop: "84px",
+          paddingBottom: "40px",
+          background: `
+            radial-gradient(ellipse 60% 50% at 20% 30%, #EAF0E2 0%, transparent 70%),
+            radial-gradient(ellipse 50% 40% at 80% 70%, #E1EAD6 0%, transparent 60%),
+            #FBFAF4
+          `,
+        }}
+      >
+        <div className="max-w-[760px] mx-auto w-full flex flex-col items-center gap-6">
 
-        <div className="max-w-[1200px] mx-auto w-full relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Left: Hero text */}
-            <div>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-accent-purple/[0.12] border border-accent-purple/30 rounded-full text-xs font-semibold text-accent-cyan mb-7">
-                <span className="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse2" />
-                Intelligent Automation for Modern Business
-              </div>
-
-              <h1 className="text-[clamp(2.5rem,5vw,4.5rem)] font-black tracking-tight leading-[1.1] mb-6">
-                Build Smarter.<br />
-                <span className="gradient-text">Scale Faster.</span><br />
-                With AI.
-              </h1>
-
-              <p className="text-lg text-slate-400 max-w-[480px] mb-10">
-                StakUp designs and deploys custom AI agents, automation pipelines, and intelligent
-                integrations that save time, cut costs, and unlock new growth.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
-                <Link href="/contact?book=true" className="btn-gradient text-white font-semibold px-7 py-3 rounded-full inline-flex items-center gap-2 text-sm w-full sm:w-auto justify-center">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
-                  Book a Free Strategy Call
-                </Link>
-                <Link href="/services" className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full text-sm font-semibold border border-accent-purple/50 text-white hover:bg-accent-purple/10 hover:border-accent-purple transition-all duration-200 w-full sm:w-auto">
-                  Explore Services
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </Link>
-              </div>
-            </div>
-
-            {/* Right: Chatbot */}
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="section-label">AI Assistant</span>
-              </div>
-              <ChatBot />
-              <Link href="/contact" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors duration-200 self-start">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                Prefer talking to a human?
-              </Link>
-            </div>
+          {/* Pill */}
+          <div className="pill" data-reveal>
+            <span className="dot" />
+            AI automation for accounting firms
           </div>
 
-          {/* Stats row */}
-          <div className="flex flex-wrap justify-center gap-8 md:gap-12 mt-16 pt-12 border-t border-accent-purple/20">
+          {/* Headline */}
+          <h1
+            className="font-serif text-ink"
+            style={{ fontSize: "clamp(1.9rem,4vw,3.1rem)", lineHeight: 1.1, letterSpacing: "-0.025em", maxWidth: "14ch" }}
+            data-reveal
+          >
+            Tell us what&apos;s slowing you down.
+            <br />
+            <em className="not-italic italic" style={{ color: "#51703F" }}>
+              We&apos;ll show you the fix.
+            </em>
+          </h1>
+
+          {/* Sub */}
+          <p
+            className="text-ink-muted"
+            style={{ fontSize: "clamp(0.98rem,1.4vw,1.12rem)", maxWidth: "46ch", lineHeight: 1.65 }}
+            data-reveal
+          >
+            Start a conversation. Verve listens, finds the busywork in your
+            practice, and points you to the solution that pays off first.
+          </p>
+
+          {/* Chat widget */}
+          <div className="w-full" style={{ maxWidth: "680px" }} data-reveal>
+            <ChatBot />
+          </div>
+
+          {/* Trust row */}
+          <div className="flex flex-col items-center gap-3 mt-2" data-reveal>
+            <p className="text-ink-ghost uppercase tracking-[0.16em] font-semibold" style={{ fontSize: "0.65rem" }}>
+              Trusted by accounting firms across the US
+            </p>
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-1">
+              {["Chen & Associates", "Rivera Tax Group", "Park Accounting", "Summit CPA"].map((name) => (
+                <span key={name} className="text-sm font-medium text-ink-ghost">{name}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll cue */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-ink-ghost animate-[scrollbob_2s_ease-in-out_infinite]">
+          <span className="text-[0.7rem] uppercase tracking-[0.14em] font-semibold">Scroll</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </svg>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════ STATS PANEL ══ */}
+      <section
+        ref={statsRef as React.RefObject<HTMLElement>}
+        className="py-20 px-6 lg:px-12"
+        style={{ background: "#F2EFE3" }}
+      >
+        <div className="max-w-[1180px] mx-auto">
+          <div className="text-center mb-12" data-reveal>
+            <span className="eyebrow">The cost of busywork</span>
+            <h2
+              className="font-serif text-ink mt-5"
+              style={{ fontSize: "clamp(2rem,4vw,3.2rem)", lineHeight: 1.08, letterSpacing: "-0.022em" }}
+            >
+              Your team loses 20+ hours a week to work
+              <br />a machine should be doing.
+            </h2>
+          </div>
+
+          {/* Stat strip */}
+          <div
+            className="grid grid-cols-2 md:grid-cols-4"
+            style={{ gap: "1px", background: "#E4E1D2" }}
+            data-reveal
+          >
             {[
-              { target: 50, suffix: "+", label: "Projects Delivered" },
-              { target: 10, suffix: "k+", label: "Hours Automated" },
-              { target: 98, suffix: "%", label: "Client Satisfaction" },
-              { target: 4.9, suffix: "★", label: "Average Rating", decimals: 1 },
+              { target: 50,  suffix: "+",  label: "Firms served"          },
+              { target: 10,  suffix: "k+", label: "Hours saved monthly"   },
+              { target: 95,  suffix: "%",  label: "Faster data entry"      },
+              { target: 4.9, suffix: "/5", label: "Client satisfaction", decimals: 1 },
             ].map(({ target, suffix, label, decimals }) => (
-              <div key={label} className="text-center">
-                <div className="text-3xl font-black gradient-text">
+              <div key={label} className="flex flex-col items-center py-10 px-7" style={{ background: "#FBFAF4" }}>
+                <div
+                  className="font-serif text-sage-deep tabular-nums"
+                  style={{ fontSize: "clamp(2.6rem,4.5vw,3.6rem)", lineHeight: 1 }}
+                >
                   <AnimatedCounter target={target} suffix={suffix} decimals={decimals} />
                 </div>
-                <div className="text-xs text-slate-500 mt-1 uppercase tracking-[0.08em]">{label}</div>
+                <div className="text-ink-muted font-medium mt-2" style={{ fontSize: "0.95rem" }}>{label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ===== SERVICES PREVIEW ===== */}
-      <section className="py-24 px-[5%]">
-        <div className="text-center max-w-[640px] mx-auto mb-16">
-          <span className="section-label mb-4 inline-flex">What We Build</span>
-          <h2 className="text-[clamp(1.8rem,4vw,3rem)] font-bold mb-4">
-            AI Solutions That Drive <span className="gradient-text">Real Results</span>
-          </h2>
-          <p className="text-slate-400">From intelligent chatbots to fully automated workflows, we engineer AI products that work in the real world.</p>
-        </div>
-        <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map(({ icon, title, desc }) => (
-            <div key={title} className="bg-bg-card card-border rounded-2xl p-8 hover:-translate-y-1 hover:shadow-glow transition-all duration-300 group relative overflow-hidden">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-accent opacity-0 group-hover:opacity-[0.04] transition-opacity duration-300 pointer-events-none" />
-              <div className="w-[52px] h-[52px] rounded-xl bg-accent-purple/[0.12] border border-accent-purple/30 flex items-center justify-center text-2xl mb-5">{icon}</div>
-              <h3 className="font-bold text-lg mb-3">{title}</h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-5">{desc}</p>
-              <Link href="/services" className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent-purple hover:text-accent-cyan transition-colors duration-200">Learn more →</Link>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* ═══════════════════════════════════════════ PRODUCT PANELS ══ */}
+      <section
+        ref={prodsRef as React.RefObject<HTMLElement>}
+        id="solutions"
+        className="py-4 px-6 lg:px-12 scroll-mt-[68px]"
+        style={{ background: "#FBFAF4" }}
+      >
+        {servicesData.map((svc, i) => {
+          const isAlt = i % 2 !== 0;
+          const indexLabel = String(i + 1).padStart(2, "0");
+          return (
+            <div
+              key={svc.slug}
+              className="max-w-[1180px] mx-auto py-20 lg:py-28"
+              style={{ borderBottom: i < servicesData.length - 1 ? "1px solid #E4E1D2" : "none" }}
+            >
+              <div
+                className={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-center ${isAlt ? "lg:[direction:rtl]" : ""}`}
+              >
+                {/* Copy */}
+                <div style={{ direction: "ltr" }} data-reveal>
+                  <div className="flex items-center gap-3 mb-5">
+                    <span className="font-serif italic text-sage-soft" style={{ fontSize: "1.4rem" }}>
+                      {indexLabel}
+                    </span>
+                    <span className="eyebrow">{svc.category}</span>
+                  </div>
+                  <h2
+                    className="font-serif text-ink mb-5"
+                    style={{ fontSize: "clamp(2.4rem,5vw,4rem)", lineHeight: 1.05, letterSpacing: "-0.022em" }}
+                  >
+                    {svc.title}
+                  </h2>
+                  <p className="text-ink-muted mb-8" style={{ maxWidth: "42ch", lineHeight: 1.65 }}>
+                    {svc.shortDesc}
+                  </p>
+                  <Link
+                    href={`/services/${svc.slug}`}
+                    className="group inline-flex items-center gap-2 font-semibold text-sage-deep hover:text-sage transition-colors duration-200"
+                    style={{ fontSize: "0.97rem" }}
+                  >
+                    See how it works
+                    <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-1" />
+                  </Link>
+                </div>
 
-      {/* ===== HOW IT WORKS ===== */}
-      <section className="py-24 px-[5%] border-t border-b border-accent-purple/20" style={{ background: "#0c1120" }}>
-        <div className="text-center max-w-[640px] mx-auto mb-16">
-          <span className="section-label mb-4 inline-flex">The Process</span>
-          <h2 className="text-[clamp(1.8rem,4vw,3rem)] font-bold mb-4">
-            From Idea to <span className="gradient-text">Production</span>
-          </h2>
-          <p className="text-slate-400">A clear, proven process that delivers working AI solutions in weeks, not months.</p>
-        </div>
-        <div className="max-w-[900px] mx-auto flex flex-col">
-          {steps.map(({ num, title, desc }, i) => (
-            <div key={num} className={`grid grid-cols-[56px_1fr] md:grid-cols-[80px_1fr] gap-4 md:gap-8 py-10 ${i < steps.length - 1 ? "border-b border-accent-purple/20" : ""}`}>
-              <div className="text-4xl md:text-5xl font-black gradient-text opacity-40 leading-none">{num}</div>
-              <div>
-                <h3 className="text-xl font-bold mb-2.5">{title}</h3>
-                <p className="text-slate-400 text-[0.95rem]">{desc}</p>
+                {/* Visual stat panel */}
+                <div style={{ direction: "ltr" }} data-reveal>
+                  <div
+                    className="rounded-xl relative flex flex-col items-center justify-center overflow-hidden"
+                    style={{
+                      aspectRatio: "1 / 0.92",
+                      background: isAlt
+                        ? "linear-gradient(135deg, #F2EFE3 0%, #FFFFFF 100%)"
+                        : "linear-gradient(135deg, #EAF0E2 0%, #FFFFFF 100%)",
+                      border: "1px solid #E4E1D2",
+                    }}
+                  >
+                    {/* Concentric rings */}
+                    <div
+                      className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                      style={{ opacity: 0.3 }}
+                    >
+                      <div
+                        className="absolute rounded-full"
+                        style={{ width: "65%", height: "65%", border: "1px solid #9DB389" }}
+                      />
+                      <div
+                        className="absolute rounded-full"
+                        style={{ width: "88%", height: "88%", border: "1px solid #9DB389" }}
+                      />
+                    </div>
+
+                    {/* Stat */}
+                    <div className="relative text-center px-8">
+                      <div
+                        className="font-serif text-sage-deep"
+                        style={{ fontSize: "clamp(3.5rem,7vw,6rem)", lineHeight: 1, letterSpacing: "-0.02em" }}
+                      >
+                        {svc.heroStat}
+                      </div>
+                      <div className="text-ink-muted mt-3 max-w-[24ch] mx-auto" style={{ fontSize: "0.92rem", lineHeight: 1.45 }}>
+                        {svc.heroStatCaption}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
+          );
+        })}
+      </section>
+
+      {/* ═══════════════════════════════════════════ HOW IT WORKS ══ */}
+      <section
+        ref={howRef as React.RefObject<HTMLElement>}
+        id="how-it-works"
+        className="py-24 px-6 lg:px-12 scroll-mt-[68px]"
+        style={{ background: "#F2EFE3" }}
+      >
+        <div className="max-w-[1180px] mx-auto">
+          <div className="text-center mb-16" data-reveal>
+            <span className="eyebrow">Process</span>
+            <h2
+              className="font-serif text-ink mt-5"
+              style={{ fontSize: "clamp(2rem,4vw,3rem)", lineHeight: 1.08, letterSpacing: "-0.022em" }}
+            >
+              From discovery to deployment —<br />in weeks, not months.
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0">
+            {steps.map((step, i) => (
+              <div
+                key={step.num}
+                className="py-8 lg:py-0"
+                style={{
+                  borderLeft: i > 0 ? "1px solid #E4E1D2" : "none",
+                  paddingLeft: i > 0 ? "2rem" : 0,
+                  paddingRight: i < steps.length - 1 ? "2rem" : 0,
+                }}
+                data-reveal
+              >
+                <div
+                  className="font-serif italic text-sage mb-4"
+                  style={{ fontSize: "2.2rem", lineHeight: 1 }}
+                >
+                  {step.num}
+                </div>
+                <h3 className="font-semibold text-ink mb-3" style={{ fontSize: "1.1rem" }}>
+                  {step.title}
+                </h3>
+                <p className="text-ink-muted text-sm leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ===== CTA ===== */}
-      <section className="py-20 px-[5%]">
-        <div className="max-w-[800px] mx-auto bg-bg-card border border-accent-purple/50 rounded-3xl p-12 md:p-16 text-center relative overflow-hidden">
-          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(108,99,255,0.18) 0%, transparent 70%)" }} />
-          <span className="section-label mb-5 inline-flex justify-center">Get Started</span>
-          <h2 className="text-[clamp(1.8rem,3.5vw,2.8rem)] font-bold mb-4">
-            Ready to <span className="gradient-text">Automate & Grow</span>?
+      {/* ═══════════════════════════════════════════ TESTIMONIAL ══ */}
+      <section
+        className="snap-panel relative min-h-[55vh] flex items-center py-24 px-6 lg:px-12 overflow-hidden"
+        style={{ background: "#18271C" }}
+      >
+        {/* Faint forest radial */}
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            top: "-30%", right: "-15%", width: "60%", height: "160%",
+            background: "radial-gradient(ellipse, rgba(110,139,90,0.12) 0%, transparent 70%)",
+          }}
+        />
+
+        <div className="relative max-w-[860px] mx-auto text-center">
+          <span className="eyebrow eyebrow-forest" data-reveal>Why firms choose verve</span>
+
+          <blockquote
+            className="font-serif mt-8 mb-10"
+            style={{
+              fontSize: "clamp(1.8rem,3.6vw,3rem)",
+              lineHeight: 1.18,
+              fontWeight: 300,
+              color: "#EEF2E6",
+              letterSpacing: "-0.018em",
+            }}
+            data-reveal
+          >
+            &ldquo;verve automated our entire invoice processing pipeline.
+            We went from{" "}
+            <em className="italic not-italic" style={{ color: "#9DB389" }}>3 hours a day</em>
+            {" "}to under{" "}
+            <em className="italic not-italic" style={{ color: "#9DB389" }}>20 minutes.</em>
+            {" "}The ROI was immediate.&rdquo;
+          </blockquote>
+
+          <div className="flex items-center justify-center gap-3" data-reveal>
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm flex-shrink-0"
+              style={{ background: "#213A28", color: "#9DB389" }}
+            >
+              SC
+            </div>
+            <div className="text-left">
+              <div className="font-semibold" style={{ color: "#EEF2E6", fontSize: "0.95rem" }}>Sarah Chen</div>
+              <div style={{ color: "rgba(238,242,230,0.55)", fontSize: "0.82rem" }}>
+                Managing Partner, Chen &amp; Associates CPA
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════ FINAL CTA ══ */}
+      <section
+        ref={ctaRef as React.RefObject<HTMLElement>}
+        className="snap-panel relative min-h-[50vh] flex items-center py-28 px-6 lg:px-12 overflow-hidden"
+        style={{ background: "#FBFAF4" }}
+      >
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            top: "50%", left: "50%", transform: "translate(-50%,-50%)",
+            width: "70%", height: "200%",
+            background: "radial-gradient(ellipse, rgba(110,139,90,0.07) 0%, transparent 65%)",
+          }}
+        />
+
+        <div className="relative max-w-[680px] mx-auto text-center" data-reveal>
+          <span className="eyebrow mb-6 block">Get started</span>
+
+          <h2
+            className="font-serif text-ink mb-6"
+            style={{ fontSize: "clamp(2.4rem,5.5vw,4rem)", lineHeight: 1.05, letterSpacing: "-0.025em" }}
+          >
+            Ready to save{" "}
+            <em className="italic not-italic" style={{ color: "#51703F" }}>20+ hours</em>
+            {" "}a week?
           </h2>
-          <p className="text-slate-400 max-w-[480px] mx-auto mb-9">
-            Book a free 30-minute strategy call and discover exactly how AI can save your team hours every week.
+
+          <p className="text-ink-muted mb-10 mx-auto" style={{ maxWidth: "44ch", lineHeight: 1.65 }}>
+            Book a free 30-minute strategy call and discover exactly how AI can
+            eliminate busywork in your practice.
           </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/contact?book=true" className="btn-gradient text-white font-semibold px-7 py-3 rounded-full inline-flex items-center gap-2 text-sm">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
-              Book Free Call
+
+          <div className="flex flex-wrap gap-3 justify-center">
+            <Link href="/contact?book=true" className="btn-primary">
+              Book free strategy call
+              <ArrowRight size={15} />
             </Link>
-            <Link href="/services" className="inline-flex items-center gap-2 px-7 py-3 rounded-full text-sm font-semibold border border-accent-purple/50 text-white hover:bg-accent-purple/10 transition-all duration-200">
-              View Services
+            <Link href="/#solutions" className="btn-ghost">
+              View solutions
             </Link>
           </div>
         </div>

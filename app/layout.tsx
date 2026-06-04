@@ -4,9 +4,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "StakUp — AI Agency",
+  title: "verve — AI Agency for Accountants",
   description:
-    "StakUp designs and deploys custom AI agents, automation pipelines, and intelligent integrations that save time, cut costs, and unlock new growth.",
+    "verve designs and deploys custom AI agents and automation solutions specifically for accounting practices — helping firms save hours, reduce errors, and scale without adding headcount.",
 };
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased bg-bg-primary text-white">
+      <body className="antialiased">
         <Header />
         <main>{children}</main>
         <Footer />

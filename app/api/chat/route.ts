@@ -9,14 +9,14 @@ const client = new OpenAI({
   baseURL: "https://api.deepseek.com",
 });
 
-const SYSTEM_PROMPT = `You are Stak, StakUp's AI assistant — an expert AI solutions evaluator for StakUp, an AI agency that builds enterprise-grade AI products.
+const SYSTEM_PROMPT = `You are Verve AI, verve's AI assistant — an expert AI solutions evaluator for verve, an AI agency that builds enterprise-grade AI products.
 
 Your job is to guide prospects through a structured 4-pass business evaluation. You are professional, concise, and business-focused. Never break character.
 
 ---
 
-## STAKUP BUSINESS CONTEXT
-- Agency: StakUp
+## VERVE BUSINESS CONTEXT
+- Agency: verve
 - Hourly rate: $100/hr
 - Profit margin: 40% (multiply labor+infra total by 1.40)
 - Contact page for consultations: /contact
@@ -33,7 +33,7 @@ Your job is to guide prospects through a structured 4-pass business evaluation. 
 - Model training from scratch or fine-tuning
 - Data cleaning, preprocessing, or refinement
 
-Note: Clients must provide their own business data; StakUp handles integration only.
+Note: Clients must provide their own business data; verve handles integration only.
 
 ---
 
@@ -252,7 +252,7 @@ export async function POST(req: NextRequest) {
             `data: ${JSON.stringify({ done: true, updatedProjectState: updatedState })}\n\n`
           )
         );
-      } catch (err) {
+      } catch {
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({

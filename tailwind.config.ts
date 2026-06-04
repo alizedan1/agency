@@ -9,59 +9,79 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: {
-          primary: "#050810",
-          secondary: "#0c1120",
-          card: "#0f1628",
+        paper:      "#FBFAF4",
+        cream:      "#F2EFE3",
+        "cream-deep": "#ECE8D8",
+        tint:       "#EAF0E2",
+        "tint-2":   "#E1EAD6",
+        sage: {
+          DEFAULT: "#6E8B5A",
+          deep:    "#51703F",
+          soft:    "#9DB389",
         },
-        accent: {
-          purple: "#6c63ff",
-          cyan: "#00d4ff",
+        olive: {
+          DEFAULT: "#8C9A4C",
+          deep:    "#6E7B36",
         },
+        forest: {
+          DEFAULT: "#18271C",
+          2:       "#213A28",
+          3:       "#2C4A33",
+        },
+        ink: {
+          DEFAULT: "#24261F",
+          soft:    "#3C3F34",
+          muted:   "#5E6153",
+          ghost:   "#9A9C8C",
+        },
+        line: {
+          DEFAULT: "#E4E1D2",
+          soft:    "#EDEADD",
+        },
+        "on-forest": "#EEF2E6",
+        surface: "#FFFFFF",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        sans:  ["Hanken Grotesk", "system-ui", "-apple-system", "sans-serif"],
+        serif: ["Newsreader", "Georgia", "Times New Roman", "serif"],
       },
-      backgroundImage: {
-        "gradient-accent": "linear-gradient(135deg, #6c63ff 0%, #00d4ff 100%)",
-        "gradient-accent-r": "linear-gradient(135deg, #00d4ff 0%, #6c63ff 100%)",
+      borderRadius: {
+        sm:   "8px",
+        DEFAULT: "14px",
+        lg:   "22px",
+        xl:   "30px",
+        pill: "100px",
       },
       animation: {
-        float: "float 8s ease-in-out infinite",
-        float2: "float2 10s ease-in-out infinite",
-        float3: "float3 7s ease-in-out infinite",
-        pulse2: "pulse2 2s ease-in-out infinite",
-        typing1: "typing 1.4s ease-in-out infinite",
-        typing2: "typing 1.4s ease-in-out 0.2s infinite",
-        typing3: "typing 1.4s ease-in-out 0.4s infinite",
+        "pulse-dot": "vpulse 2s ease-in-out infinite",
+        typing1:     "vbounce 1.3s ease-in-out infinite",
+        typing2:     "vbounce 1.3s ease-in-out 0.18s infinite",
+        typing3:     "vbounce 1.3s ease-in-out 0.36s infinite",
+        vrise:       "vrise 0.4s cubic-bezier(0.22,1,0.36,1) both",
+        "scroll-bob":"scrollbob 2s ease-in-out infinite",
       },
       keyframes: {
-        float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-30px)" },
+        vpulse: {
+          "0%,100%": { opacity: "1",    transform: "scale(1)"   },
+          "50%":     { opacity: "0.45", transform: "scale(0.7)" },
         },
-        float2: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-20px)" },
+        vbounce: {
+          "0%,80%,100%": { transform: "translateY(0)",   opacity: "0.4" },
+          "40%":          { transform: "translateY(-5px)", opacity: "1"   },
         },
-        float3: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-15px)" },
+        vrise: {
+          from: { opacity: "0", transform: "translateY(8px)" },
+          to:   { opacity: "1", transform: "translateY(0)"   },
         },
-        pulse2: {
-          "0%, 100%": { opacity: "1", transform: "scale(1)" },
-          "50%": { opacity: "0.5", transform: "scale(0.8)" },
-        },
-        typing: {
-          "0%, 80%, 100%": { transform: "translateY(0)", opacity: "0.4" },
-          "40%": { transform: "translateY(-6px)", opacity: "1" },
+        scrollbob: {
+          "0%,100%": { transform: "translateY(0)"   },
+          "50%":     { transform: "translateY(6px)" },
         },
       },
       boxShadow: {
-        glow: "0 0 40px rgba(108, 99, 255, 0.3)",
-        "glow-lg": "0 0 60px rgba(108, 99, 255, 0.4)",
-        "glow-btn": "0 4px 24px rgba(108, 99, 255, 0.4)",
-        "glow-btn-hover": "0 8px 32px rgba(108, 99, 255, 0.6)",
+        chat:        "0 30px 70px -30px rgba(36,38,31,0.22), 0 2px 6px rgba(36,38,31,0.04)",
+        "btn-sage":  "0 10px 26px rgba(81,112,63,0.28)",
+        card:        "0 1px 3px rgba(36,38,31,0.06)",
       },
     },
   },

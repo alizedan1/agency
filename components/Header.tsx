@@ -1,107 +1,103 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ArrowRight } from "lucide-react";
 
 const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/services", label: "Services" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/#solutions",      label: "Solutions"     },
+  { href: "/#how-it-works",   label: "How it works"  },
+  { href: "/contact",         label: "Contact"       },
 ];
 
 export default function Header() {
-  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handler);
+    const handler = () => setScrolled(window.scrollY > 16);
+    window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-[5%] h-[72px] transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-bg-primary/85 backdrop-blur-xl border-b border-accent-purple/20"
-            : ""
+            ? "border-b border-line"
+            : "border-b border-transparent"
         }`}
+        style={
+          scrolled
+            ? { background: "rgba(251,250,244,0.82)", backdropFilter: "blur(18px)" }
+            : { background: "transparent" }
+        }
       >
-        {/* Logo */}
-        <Link href="/" className="gradient-text text-2xl font-black tracking-tight">
-          StakUp
-        </Link>
+        <div className="flex items-center justify-between px-6 lg:px-12 h-[68px] max-w-[1280px] mx-auto">
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-2">
-          <ul className="flex items-center gap-1 mr-6 list-none">
-            {navLinks.map(({ href, label }) => (
-              <li key={href}>
-                <Link
-                  href={href}
-                  className={`block px-4 py-2 text-sm rounded-lg transition-colors duration-200 ${
-                    pathname === href
-                      ? "text-white bg-white/5"
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          {/* Wordmark */}
           <Link
-            href="/contact?book=true"
-            className="btn-gradient text-white font-semibold text-sm px-6 py-2.5 rounded-full inline-flex items-center gap-2"
+            href="/"
+            className="font-serif italic text-[1.55rem] text-ink leading-none"
+            style={{ letterSpacing: "-0.01em" }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/>
-            </svg>
-            Book Now
+            verve
           </Link>
-        </nav>
 
-        {/* Hamburger */}
-        <button
-          className="md:hidden flex flex-col gap-[5px] p-2 border-none bg-transparent cursor-pointer"
-          aria-label="Toggle menu"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          <span
-            className={`block w-6 h-0.5 bg-white rounded transition-transform duration-300 ${
-              menuOpen ? "rotate-45 translate-y-[7px]" : ""
-            }`}
-          />
-          <span
-            className={`block w-6 h-0.5 bg-white rounded transition-opacity duration-300 ${
-              menuOpen ? "opacity-0" : ""
-            }`}
-          />
-          <span
-            className={`block w-6 h-0.5 bg-white rounded transition-transform duration-300 ${
-              menuOpen ? "-rotate-45 -translate-y-[7px]" : ""
-            }`}
-          />
-        </button>
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {navLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="px-4 py-2 text-[0.92rem] text-ink-muted hover:text-ink transition-colors duration-200 rounded"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* CTA */}
+          <div className="hidden md:flex items-center">
+            <Link href="/contact?book=true" className="btn-primary text-sm py-[0.6em]">
+              Book a call
+              <ArrowRight size={14} />
+            </Link>
+          </div>
+
+          {/* Hamburger */}
+          <button
+            className="md:hidden flex flex-col gap-[5px] p-2 border-none bg-transparent cursor-pointer"
+            aria-label="Toggle menu"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <span className={`block w-5 h-[1.5px] bg-ink rounded transition-transform duration-300 ${menuOpen ? "rotate-45 translate-y-[6.5px]" : ""}`} />
+            <span className={`block w-5 h-[1.5px] bg-ink rounded transition-opacity duration-300 ${menuOpen ? "opacity-0" : ""}`} />
+            <span className={`block w-5 h-[1.5px] bg-ink rounded transition-transform duration-300 ${menuOpen ? "-rotate-45 -translate-y-[6.5px]" : ""}`} />
+          </button>
+        </div>
       </header>
 
       {/* Mobile nav */}
       <nav
-        className={`fixed top-[72px] left-0 right-0 z-40 flex flex-col gap-2 px-[5%] py-6 bg-bg-primary/97 backdrop-blur-xl border-b border-accent-purple/20 transition-all duration-300 md:hidden ${
-          menuOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
+        className={`fixed top-[68px] left-0 right-0 z-40 flex flex-col gap-1 px-6 py-5 border-b border-line shadow-[0_4px_16px_rgba(36,38,31,0.08)] transition-all duration-300 md:hidden ${
+          menuOpen
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 -translate-y-2 pointer-events-none"
         }`}
+        style={{ background: "rgba(251,250,244,0.96)", backdropFilter: "blur(18px)" }}
       >
-        {navLinks.map(({ href, label }) => (
+        {[
+          { href: "/",              label: "Home"         },
+          { href: "/#solutions",    label: "Solutions"    },
+          { href: "/#how-it-works", label: "How it works" },
+          { href: "/contact",       label: "Contact"      },
+        ].map(({ href, label }) => (
           <Link
             key={href}
             href={href}
-            className={`block px-4 py-3 text-base rounded-lg transition-colors duration-200 ${
-              pathname === href ? "text-white bg-white/5" : "text-slate-400 hover:text-white hover:bg-white/5"
-            }`}
+            className="block px-4 py-3 text-sm text-ink-muted hover:text-ink rounded transition-colors"
             onClick={() => setMenuOpen(false)}
           >
             {label}
@@ -109,10 +105,11 @@ export default function Header() {
         ))}
         <Link
           href="/contact?book=true"
-          className="btn-gradient text-white font-semibold text-sm px-6 py-3 rounded-full text-center mt-2"
+          className="btn-primary text-sm mt-2 justify-center"
           onClick={() => setMenuOpen(false)}
         >
-          Book Now
+          Book a call
+          <ArrowRight size={14} />
         </Link>
       </nav>
     </>
